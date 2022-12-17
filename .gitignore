@@ -1,0 +1,8 @@
+### ENV ###
+.env.local
+
+### YARN ###
+yarn.lock
+
+### NODE_MODULES ###
+node_modules
