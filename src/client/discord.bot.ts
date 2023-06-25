@@ -1,7 +1,14 @@
 import consola, { Consola } from 'consola';
-import { Client, ClientOptions, Collection, REST } from 'discord.js';
+import {
+  Client,
+  ClientOptions,
+  Collection,
+  REST,
+  ModalBuilder,
+} from 'discord.js';
 import { handleCommands } from '../handlers/commands.handler';
 import { handleEvents } from '../handlers/events.handler';
+import { handleModals } from '../handlers/modals.handler';
 import * as dotenv from 'dotenv';
 
 dotenv.config();
@@ -13,6 +20,8 @@ export class DiscordBot extends Client {
   restRequest = new REST({ version: '10' }).setToken(process.env.BOT_TOKEN);
   events: Collection<string, IEvent> = new Collection();
   commands: Collection<string, ICommandFile> = new Collection();
+  modals: Collection<string, { builder: ModalBuilder; file: IModal }> =
+    new Collection();
 
   public constructor(options: ClientOptions) {
     super(options);
@@ -24,6 +33,7 @@ export class DiscordBot extends Client {
    */
   public async start() {
     this.logger.info(`Bot starting..`);
+
     await this.login(process.env.BOT_TOKEN);
     this.logger.success(`Bot Started!`);
     this.logged = true;
@@ -33,6 +43,11 @@ export class DiscordBot extends Client {
 
     this.logger.info(`Loading commands..`);
     await handleCommands(this);
+
+    this.logger.info(`Loading modals...`);
+    await handleModals(this);
+
+    this.logger.success('Everything is ready!');
   }
 
   /**
@@ -58,7 +73,7 @@ export class DiscordBot extends Client {
    * @returns string | null
    */
   public getAvatarURL(): string | null | undefined {
-    return this.user?.avatarURL();
+    return this.user?.displayAvatarURL();
   }
 
   /**

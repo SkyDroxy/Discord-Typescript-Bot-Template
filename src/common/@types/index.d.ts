@@ -1,4 +1,5 @@
 import {
+  ActionRowBuilder,
   ApplicationCommandOptionType,
   Attachment,
   ChatInputCommandInteraction,
@@ -6,15 +7,15 @@ import {
   GuildBasedChannel,
   GuildMember,
   Message,
+  ModalActionRowComponentBuilder,
+  ModalSubmitInteraction,
   Role,
   SlashCommandBuilder,
   User,
   UserContextMenuCommandInteraction,
 } from 'discord.js';
 import { DiscordBot } from '../client/discord.bot';
-import { env } from 'process';
-import { CommandBuilder } from '../../classes/CommandBuilder';
-import { SubCommandBuilder } from 'src/Classes/SubCommandBuilder';
+import { CommandBuilder, SubCommandBuilder } from '../../builders';
 
 declare global {
   /**
@@ -42,6 +43,21 @@ declare global {
         | ChatInputCommandInteraction
         | UserContextMenuCommandInteraction,
       args?: IInteractionArg[],
+    ) => Promise<any>;
+  }
+
+  /**
+   * Discord ModalFile Interface
+   */
+  interface IModal {
+    customId: string;
+    title: string;
+    developer: boolean;
+    ephemeral: boolean;
+    components: ActionRowBuilder<T>[];
+    execute?: (
+      bot: DiscordBot,
+      interaction: ModalSubmitInteraction,
     ) => Promise<any>;
   }
 
@@ -81,7 +97,7 @@ declare global {
   interface IInteractionArg {
     name: string;
     type: ApplicationCommandOptionType;
-    value?: string | number | boolean;
+    value?: any;
     attachment?: Attachment;
     role?: Role;
     user?: User;

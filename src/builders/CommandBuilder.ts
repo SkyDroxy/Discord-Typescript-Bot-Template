@@ -91,6 +91,7 @@ export class CommandBuilder {
   public toJSON(): object {
     const command = { ...this.command };
     if (command.type === ApplicationCommandType.User) {
+      delete command.options;
       delete command.description;
     }
     return JSON.parse(JSON.stringify(command));

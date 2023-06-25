@@ -12,5 +12,6 @@ export const command: ICommandFile = {
     args: IInteractionArg[],
   ): Promise<void> {
     await interaction.reply({ content: 'Pong!', ephemeral: command.ephemeral });
+    return;
   },
 };
